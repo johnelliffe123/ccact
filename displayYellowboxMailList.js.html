@@ -1,0 +1,122 @@
+<script>
+  // As this site is part of a multisite WP installation,
+  // if this page is updated by a non superuser the script tags may be stripped out.
+
+  const API_ENDPOINT =
+    "https://conservationcouncil.org.au/civicrm/ajax/api4/Mailing/get";
+  const API_KEY = "kPNWn7hc9LniVw39"; // api
+
+  async function fetchNewsletterHTML(id) {
+    const params = {
+      where: [["id", "=", id]],
+    };
+
+    try {
+      const response = await fetch(
+        `${API_ENDPOINT}?params=${encodeURIComponent(JSON.stringify(params))}`,
+        {
+          method: "GET",
+          headers: {
+            "X-Civi-Auth": `Bearer ${API_KEY}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.values[0].body_html;
+    } catch (error) {
+      console.error("Error fetching newsletter:", error);
+      alert("Failed to load newsletter. Please try again.");
+      return null;
+    }
+  }
+
+  // Function to open newsletter in new window
+  async function openNewsletterFromAPI(id, subject) {
+    const html = await fetchNewsletterHTML(id);
+    if (html) {
+      const blob = new Blob([html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      newWindow = window.open(url, (target = id));
+      newWindow.onload = function () {
+        newWindow.document.title = subject;
+      };
+    }
+  }
+  function openNewsletter(id) {
+    const url = `https://conservationcouncil.org.au/civicrm/mailing/view/?reset=1&id=${id}`;
+    newWindow = window.open(url, (target = id));
+  }
+
+  async function fetchNewsletterList() {
+    const params = {
+      select: ["id", "name", "subject", "status"],
+      where: [
+        ["campaign_id", "=", 6],
+        ["stats_successful", ">", 10],
+        ["status", "=", "Complete"],
+      ],
+      orderBy: { id: "DESC" },
+      limit: 3,
+    };
+
+    try {
+      const response = await fetch(
+        `${API_ENDPOINT}?params=${encodeURIComponent(JSON.stringify(params))}`,
+        {
+          method: "GET",
+          headers: {
+            "X-Civi-Auth": `Bearer ${API_KEY}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.values;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function displayNewsletters(newsletters) {
+    const container = document.getElementById("newsletterList");
+    container.innerHTML = "";
+
+    newsletters.forEach((newsletter) => {
+      const card = document.createElement("div");
+      card.className = "newsletter-card";
+
+      const subject = document.createElement("p");
+      subject.className = "newsletter-subject et_pb_text";
+
+      const link = document.createElement("a");
+      link.href = `https://conservationcouncil.org.au/civicrm/mailing/view/?reset=1&id=${newsletter.id}`;
+      link.textContent = newsletter.name;
+      link.target = "yellowbox";
+
+      subject.appendChild(link);
+      card.appendChild(subject);
+      container.appendChild(card);
+    });
+  }
+
+  async function displayYellowboxMailList() {
+    const container = document.getElementById("newsletterList");
+    container.innerHTML = '<div class="loading">Loading newsletters...</div>';
+    const newsletters = await fetchNewsletterList();
+    if (newsletters) {
+      displayNewsletters(newsletters);
+    } else {
+      container.innerHTML =
+        '<div class="empty">No newsletters found<br/>Please refresh this page</div>';
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", displayYellowboxMailList);
+</script>

@@ -1,0 +1,170 @@
+<script>
+  // Submissions page collapse
+
+  jQuery(function ($) {
+    $(".et_pb_toggle_title").click(function () {
+      var $toggle = $(this).closest(".et_pb_toggle");
+      if (!$toggle.hasClass("et_pb_accordion_toggling")) {
+        var $accordion = $toggle.closest(".et_pb_accordion");
+        if ($toggle.hasClass("et_pb_toggle_open")) {
+          $accordion.addClass("et_pb_accordion_toggling");
+          $toggle.find(".et_pb_toggle_content").slideToggle(700, function () {
+            $toggle
+              .removeClass("et_pb_toggle_open")
+              .addClass("et_pb_toggle_close");
+          });
+        }
+        setTimeout(function () {
+          $accordion.removeClass("et_pb_accordion_toggling");
+        }, 750);
+      }
+    });
+  });
+</script>
+
+<script>
+  // Add screen reader warning for links with new tab target
+  function addNewTabWarnings() {
+    const links = document.querySelectorAll('a[target="_blank"]');
+
+    links.forEach((link) => {
+      // Add rel values if required
+      const rel = new Set(link.rel.split(" ").filter(Boolean));
+      if (!rel.has("noopener")) rel.add("noopener");
+      if (!rel.has("noreferrer")) rel.add("noreferrer");
+      link.rel = [...rel].join(" ");
+
+      // Avoid duplicating the span if this runs more than once
+      if (link.querySelector(".sr-only")) return;
+
+      const span = document.createElement("span");
+      span.className = "sr-only";
+      span.textContent = "(opens in new tab)";
+      link.appendChild(span);
+    });
+  }
+
+  function makeToggleAccessible() {
+    document.querySelectorAll(".et_pb_toggle").forEach((toggle) => {
+      const title = toggle.querySelector(".et_pb_toggle_title");
+      const content = toggle.querySelector(".et_pb_toggle_content");
+
+      if (!title || !content) return;
+
+      // Give the content an ID so the title can reference it
+      const id = "toggle-" + Math.random().toString(36).slice(2, 7);
+      content.id = id;
+
+      // Make the title a button
+      title.setAttribute("role", "button");
+      title.setAttribute("tabindex", "0");
+      title.setAttribute("aria-controls", id);
+
+      // Set initial state
+      const isOpen = toggle.classList.contains("et_pb_toggle_open");
+      title.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      content.setAttribute("aria-hidden", isOpen ? "false" : "true");
+
+      // Keyboard support — Enter and Space should toggle
+      title.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          title.click();
+        }
+      });
+
+      // Keep ARIA in sync when Divi toggles the class
+      const observer = new MutationObserver(() => {
+        const open = toggle.classList.contains("et_pb_toggle_open");
+        title.setAttribute("aria-expanded", open ? "true" : "false");
+        content.setAttribute("aria-hidden", open ? "false" : "true");
+      });
+
+      observer.observe(toggle, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    });
+  }
+
+  function makeSecondaryMenuAccessibleByKeyboard() {
+    document.querySelectorAll(".menu-item-has-children").forEach((item) => {
+      const trigger = item.querySelector(":scope > a");
+      const submenu = item.querySelector(":scope > .sub-menu");
+
+      if (!trigger || !submenu) return;
+
+      // Set up the trigger
+      const id = "submenu-" + Math.random().toString(36).slice(2, 7);
+      submenu.id = id;
+      trigger.setAttribute("role", "button");
+      trigger.setAttribute("tabindex", "0");
+      trigger.setAttribute("aria-haspopup", "menu");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.setAttribute("aria-controls", id);
+
+      function openSubmenu() {
+        item.classList.add("et-show-dropdown", "et-hover");
+        submenu.style.visibility = "visible"; // ensure it's visible for screen readers
+        submenu.style.opacity = "1"; // ensure it's visible for screen readers
+        trigger.setAttribute("aria-expanded", "true");
+        // Move focus to first submenu item
+        setTimeout(() => {
+          submenu.querySelector("a")?.focus();
+        }, 150); // adjust to match Divi's transition duration
+      }
+
+      function closeSubmenu() {
+        item.classList.remove("et-show-dropdown", "et-hover");
+        submenu.style = "";
+        trigger.setAttribute("aria-expanded", "false");
+      }
+
+      // Enter/Space opens the submenu
+      trigger.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          const isOpen = trigger.getAttribute("aria-expanded") === "true";
+          isOpen ? closeSubmenu() : openSubmenu();
+        }
+        // Escape on trigger closes submenu
+        if (e.key === "Escape") {
+          closeSubmenu();
+        }
+      });
+
+      submenu.addEventListener("keydown", (e) => {
+        if (e.key === " ") {
+          e.preventDefault();
+          trigger.focus();
+          closeSubmenu();
+        }
+        // Escape within submenu closes submenu and returns focus to trigger
+        if (e.key === "Escape") {
+          trigger.focus();
+          closeSubmenu();
+        }
+      });
+
+      // Close when focus leaves the whole menu item entirely
+      item.addEventListener("focusout", (e) => {
+        setTimeout(() => {
+          if (!item.contains(document.activeElement)) closeSubmenu();
+        }, 100);
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addNewTabWarnings);
+    document.addEventListener("DOMContentLoaded", makeToggleAccessible);
+    document.addEventListener(
+      "DOMContentLoaded",
+      makeSecondaryMenuAccessibleByKeyboard,
+    );
+  } else {
+    addNewTabWarnings();
+    makeToggleAccessible();
+    makeSecondaryMenuAccessibleByKeyboard();
+  }
+</script>
