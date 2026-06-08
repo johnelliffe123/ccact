@@ -9,9 +9,7 @@
         if ($toggle.hasClass("et_pb_toggle_open")) {
           $accordion.addClass("et_pb_accordion_toggling");
           $toggle.find(".et_pb_toggle_content").slideToggle(700, function () {
-            $toggle
-              .removeClass("et_pb_toggle_open")
-              .addClass("et_pb_toggle_close");
+            $toggle.removeClass("et_pb_toggle_open").addClass("et_pb_toggle_close");
           });
         }
         setTimeout(function () {
@@ -155,16 +153,25 @@
     });
   }
 
+  function makeViewportScalable() {
+    meta = document.querySelector("meta[name='viewport']");
+    if (meta) {
+      meta.setAttribute(
+        "content",
+        "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1",
+      );
+    }
+  }
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", addNewTabWarnings);
     document.addEventListener("DOMContentLoaded", makeToggleAccessible);
-    document.addEventListener(
-      "DOMContentLoaded",
-      makeSecondaryMenuAccessibleByKeyboard,
-    );
+    document.addEventListener("DOMContentLoaded", makeSecondaryMenuAccessibleByKeyboard);
+    document.addEventListener("DOMContentLoaded", makeViewportScalable);
   } else {
     addNewTabWarnings();
     makeToggleAccessible();
     makeSecondaryMenuAccessibleByKeyboard();
+    makeViewportScalable();
   }
 </script>
