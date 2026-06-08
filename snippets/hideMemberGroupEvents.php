@@ -6,8 +6,7 @@ function tec_exclude_events_category( $repository_args, $context, $view ) {
  
     // List of category slugs to be excluded
     $excluded_categories = [
-        'my-category-slug',
-        'my-other-category-slug',
+        'member-group',
     ];
  
     // Bail if we are looking at a category archive.
