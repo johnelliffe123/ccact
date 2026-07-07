@@ -163,15 +163,67 @@
     }
   }
 
+  function addHeadingAndReturnButtonToEventPages() {
+    var targetClasses = ["civicrm-event-register", "civicrm-event-info"];
+    var hasTargetClass = targetClasses.some(function (cls) {
+      return document.body.classList.contains(cls);
+    });
+    if (!hasTargetClass) return;
+
+    // Insert page heading
+    var mainContent = document.getElementById("crm-main-content-wrapper");
+    var metaTitle = document.querySelector('meta[property="og:title"]');
+    if (!mainContent || !metaTitle) return;
+
+    var heading = document.createElement("h1");
+    heading.textContent = metaTitle.content;
+
+    mainContent.insertBefore(heading, mainContent.firstChild);
+
+    // Insert "Return to Event List" link at the bottom
+    var eventDiv = document.querySelector(".event-info");
+    if (!eventDiv) eventDiv = document.querySelector(".crm-event-register-form-block");
+    if (!eventDiv) return;
+
+    var backLink = document.createElement("a");
+    backLink.href = "/civicrm-event-List/";
+    backLink.textContent = "Return to Event List";
+    backLink.className = "civicrm-back-button";
+
+    eventDiv.appendChild(backLink);
+  }
+
+  function addSkipToContent() {
+    var skip = document.createElement("a");
+    skip.href = "#main-content";
+    skip.className = "skip-link screen-reader-text";
+    skip.textContent = "Skip to content";
+
+    // Insert as the very first element in the body, so it's first in tab order
+    document.body.insertBefore(skip, document.body.firstChild);
+
+    var target = document.getElementById("main-content");
+    if (target) {
+      skip.addEventListener("click", function () {
+        target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
+      });
+    }
+  }
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", addNewTabWarnings);
     document.addEventListener("DOMContentLoaded", makeToggleAccessible);
     document.addEventListener("DOMContentLoaded", makeSecondaryMenuAccessibleByKeyboard);
     document.addEventListener("DOMContentLoaded", makeViewportScalable);
+    document.addEventListener("DOMContentLoaded", addHeadingAndReturnButtonToEventPages);
+    document.addEventListener("DOMContentLoaded", addSkipToContent);
   } else {
     addNewTabWarnings();
     makeToggleAccessible();
     makeSecondaryMenuAccessibleByKeyboard();
     makeViewportScalable();
+    addHeadingAndReturnButtonToEventPages();
+    addSkipToContent();
   }
 </script>
