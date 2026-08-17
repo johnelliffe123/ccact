@@ -7,6 +7,7 @@ function tec_exclude_events_category( $repository_args, $context, $view ) {
     // List of category slugs to be excluded
     $excluded_categories = [
         'member-group',
+        'western-edge-walks'
     ];
  
     // Bail if we are looking at a category archive.
