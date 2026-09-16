@@ -1,8 +1,8 @@
 /*
  * Taken from https://www.peeayecreative.com/how-to-design-a-compact-list-of-divi-blog-posts/
  *
- * Set the CCS Class to "pa-blog-compact-list" in the Blog Module
- * Paste the following CSS in the Blog module Custom CSS field
+ * Set the CCS Class to "pa-blog-compact-list" in the "Blog List + CSS" module of the Home page.
+ * Paste the following CSS in the same module's Custom CSS field
 */
 
 /*add the border and spacing around the entire blog list*/
