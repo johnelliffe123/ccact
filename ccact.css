@@ -80,9 +80,15 @@
   }
 }
 /* published date in Blog items - for colour contrast */
+.et_pb_section p.post-meta,
+p.post-meta {
+  margin-top: -10px;
+}
 p .published {
-  color: #6a7e1b;
-  font-weight: 600;
+  font-weight: 500;
+}
+p .published::before {
+  content: "Published: ";
 }
 
 /* blog title */
@@ -526,236 +532,22 @@ a:hover {
 }
 
 /* skip to content */
-.skip-link.screen-reader-text {
+.skip-to-content-link {
   position: absolute;
-  top: -40px;
+  top: -100px;
   left: 0;
   background: #000;
   color: #fff;
   padding: 8px 16px;
   z-index: 100000;
-  text-decoration: none;
   transition: top 0.2s ease-in-out;
 }
-.skip-link.screen-reader-text:focus {
+.skip-to-content-link:focus {
   top: 0;
 }
 /** end Accessibility **/
-
 
 /* gravity forms page validation message */
 .gform_wrapper.gravity-theme .gform_validation_errors > h2.gform_submission_error {
   font-size: 18px !important;
 }
-
-/*** CiviCRM Event Pages ********************************************
- *** CSS for the Event List page is on the CiviCRM Event List WP page ***/
-.crm-event-manage-tab-actions-ribbon {
-  display: none;
-}
-.crm-event-info-form-block,
-.crm-event-register-form-block {
-  margin: 2vw 4vw;
-}
-.event-info {
-  display: grid;
-  grid-template-columns: 25% 25% 25% auto;
-}
-
-.crm-actionlinks-top {
-  grid-row: 1;
-  grid-column: 4;
-}
-.crm-event-info-form-block table {
-  grid-row: 2;
-  grid-column: 1 / 5;
-}
-.event_description-section {
-  grid-row: 3;
-  grid-column: 1 / 4;
-  margin-bottom: 20px !important;
-  margin-right: 2vw;
-}
-.event_fees-section {
-  grid-row: 5;
-  grid-column: 1 / 3;
-}
-.event_date_time-section {
-  grid-row: 6;
-  grid-column: 1 / 3;
-}
-.event_address-section {
-  grid-row: 7;
-  grid-column: 1 / 3;
-}
-.event_contact-section {
-  grid-row: 8;
-  grid-column: 1 / 3;
-}
-.iCal_links-section {
-  grid-row: 10;
-}
-.crm-actionlinks-bottom {
-  grid-row: 10;
-  grid-column: 4;
-}
-.event_map-section {
-  grid-row: 5 / 10;
-  grid-column: 2 / 5;
-  justify-self: center;
-}
-.crm-socialnetwork {
-  grid-row: 11;
-  grid-column: 2 / 4;
-}
-.civicrm-back-button {
-  grid-row: 12;
-  grid-column: 1;
-}
-
-@media (max-width: 980px) {
-  .event-info {
-    display: grid;
-    grid-template-columns: 80% auto;
-  }
-
-  .crm-actionlinks-top {
-    grid-row: 1;
-    grid-column: 2;
-  }
-  .crm-event-info-form-block table {
-    grid-row: 2;
-  }
-  .event_description-section {
-    grid-row: 3;
-    grid-column: 1 / 3;
-    margin-bottom: 10px;
-  }
-  .event_fees-section {
-    grid-row: 5;
-  }
-  .event_date_time-section {
-    grid-row: 6;
-  }
-  .event_address-section {
-    grid-row: 7;
-  }
-  .event_contact-section {
-    grid-row: 8;
-  }
-  .iCal_links-section {
-    grid-row: 10;
-  }
-  .crm-actionlinks-bottom {
-    grid-row: 11;
-    grid-column: 2;
-  }
-  .event_map-section {
-    grid-row: 12;
-    grid-column: 1 / 3;
-  }
-  .crm-socialnetwork {
-    grid-row: 13;
-    grid-column: 1 / 3;
-  }
-  .civicrm-back-button {
-    grid-row: 14;
-    grid-column: 1;
-  }
-}
-
-.event_summary-section {
-  display: none;
-}
-
-.action-link.register_link-section {
-  float: right;
-  margin-left: 0;
-  margin-bottom: 20px;
-}
-
-.crm-section .label {
-  font-weight: 600;
-}
-.crm-submit-buttons button.crm-button,
-.crm-container a.crm-register-button.button {
-  font-size: 16px;
-  font-weight: 500;
-  text-shadow: none;
-  background-color: #b2d235;
-  padding: 6px 12px;
-  margin-right: 4vw;
-  border: none;
-}
-#crm-submit-buttons {
-  text-align: right;
-}
-.crm-container a.civicrm-back-button {
-  font-size: 16px;
-  font-weight: 500;
-  padding: 6px 12px;
-  margin-top: 15px;
-}
-
-#crm-container.event-info.crm-section {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
-#crm-main-content-wrapper h1 {
-  font-size: 35px;
-  font-weight: 600;
-  color: #b2d235;
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 5px;
-}
-@media (max-width: 980px) {
-  #crm-main-content-wrapper h1 {
-    font-size: 30px !important;
-  }
-}
-.crm-section td,
-.event-info.crm-section p {
-  font-size: 15px;
-}
-@media (max-width: 980px) {
-  .crm-section td,
-  .event-info .crm-section p,
-  .crm-section .content {
-    font-size: 14px;
-    line-height: 1.4em;
-  }
-}
-
-.crm-event-info-form-block summary {
-  display: none;
-}
-.crm-info-panel .label {
-  display: none;
-}
-.crm-container table.crm-info-panel {
-  border: none;
-}
-.crm-container table.crm-info-panel td,
-.crm-container table.no-border td {
-  background-color: transparent;
-  border: none;
-  text-align: center;
-}
-.crm-info-panel img {
-  width: auto;
-  max-height: 260px;
-}
-.crm-container details.crm-accordion-bold > .crm-accordion-body {
-  border: none;
-}
-.content > div.olMap {
-  max-height: 260px;
-}
-.event-info .crm-section.event_map-section .content {
-  padding-top: 25px !important;
-  font-size: 14px !important;
-  margin-left: 0;
-}
-/*** CiviCRM Event Pages end ********************************************/

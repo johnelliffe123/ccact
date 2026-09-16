@@ -1,229 +1,291 @@
 <script>
-  // Submissions page collapse
-
-  jQuery(function ($) {
-    $(".et_pb_toggle_title").click(function () {
-      var $toggle = $(this).closest(".et_pb_toggle");
-      if (!$toggle.hasClass("et_pb_accordion_toggling")) {
-        var $accordion = $toggle.closest(".et_pb_accordion");
-        if ($toggle.hasClass("et_pb_toggle_open")) {
-          $accordion.addClass("et_pb_accordion_toggling");
-          $toggle.find(".et_pb_toggle_content").slideToggle(700, function () {
-            $toggle.removeClass("et_pb_toggle_open").addClass("et_pb_toggle_close");
-          });
-        }
-        setTimeout(function () {
-          $accordion.removeClass("et_pb_accordion_toggling");
-        }, 750);
-      }
-    });
-  });
+/** 
+ * @file    ccact.js.html 
+ * @details JavaScript to enhance the accessibility and functionality of the CCACT website 
+ * @url     https://conservationcouncil.org.au/ and related pages. 
+ * 
+ * Deployed via Divi --> Theme Options --> Integration --> Add code to the <head> of your blog. 
+ * @author  John Elliffe * @date 2026-09-14 
+ * @version 1.0.0 
+**/
 </script>
 
-<script>
-  // Add screen reader warning for links with new tab target
-  function addNewTabWarnings() {
-    const links = document.querySelectorAll('a[target="_blank"]');
+  <script>
+    // Submissions page collapse
 
-    links.forEach((link) => {
-      // Add rel values if required
-      const rel = new Set(link.rel.split(" ").filter(Boolean));
-      if (!rel.has("noopener")) rel.add("noopener");
-      if (!rel.has("noreferrer")) rel.add("noreferrer");
-      link.rel = [...rel].join(" ");
-
-      // Avoid duplicating the span if this runs more than once
-      if (link.querySelector(".sr-only")) return;
-
-      const span = document.createElement("span");
-      span.className = "sr-only";
-      span.textContent = "(opens in new tab)";
-      link.appendChild(span);
-    });
-  }
-
-  function makeToggleAccessible() {
-    document.querySelectorAll(".et_pb_toggle").forEach((toggle) => {
-      const title = toggle.querySelector(".et_pb_toggle_title");
-      const content = toggle.querySelector(".et_pb_toggle_content");
-
-      if (!title || !content) return;
-
-      // Give the content an ID so the title can reference it
-      const id = "toggle-" + Math.random().toString(36).slice(2, 7);
-      content.id = id;
-
-      // Make the title a button
-      title.setAttribute("role", "button");
-      title.setAttribute("tabindex", "0");
-      title.setAttribute("aria-controls", id);
-
-      // Set initial state
-      const isOpen = toggle.classList.contains("et_pb_toggle_open");
-      title.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      content.setAttribute("aria-hidden", isOpen ? "false" : "true");
-
-      // Keyboard support — Enter and Space should toggle
-      title.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          title.click();
+    jQuery(function ($) {
+      $(".et_pb_toggle_title").click(function () {
+        var $toggle = $(this).closest(".et_pb_toggle");
+        if (!$toggle.hasClass("et_pb_accordion_toggling")) {
+          var $accordion = $toggle.closest(".et_pb_accordion");
+          if ($toggle.hasClass("et_pb_toggle_open")) {
+            $accordion.addClass("et_pb_accordion_toggling");
+            $toggle.find(".et_pb_toggle_content").slideToggle(700, function () {
+              $toggle.removeClass("et_pb_toggle_open").addClass("et_pb_toggle_close");
+            });
+          }
+          setTimeout(function () {
+            $accordion.removeClass("et_pb_accordion_toggling");
+          }, 750);
         }
       });
-
-      // Keep ARIA in sync when Divi toggles the class
-      const observer = new MutationObserver(() => {
-        const open = toggle.classList.contains("et_pb_toggle_open");
-        title.setAttribute("aria-expanded", open ? "true" : "false");
-        content.setAttribute("aria-hidden", open ? "false" : "true");
-      });
-
-      observer.observe(toggle, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
     });
-  }
+  </script>
 
-  function makeSecondaryMenuAccessibleByKeyboard() {
-    document.querySelectorAll(".menu-item-has-children").forEach((item) => {
-      const trigger = item.querySelector(":scope > a");
-      const submenu = item.querySelector(":scope > .sub-menu");
+  <script>
+    // Add screen reader warning for links with new tab target
+    function addNewTabWarnings() {
+      const links = document.querySelectorAll('a[target="_blank"]');
 
-      if (!trigger || !submenu) return;
+      links.forEach((link) => {
+        // Add rel values if required
+        const rel = new Set(link.rel.split(" ").filter(Boolean));
+        if (!rel.has("noopener")) rel.add("noopener");
+        if (!rel.has("noreferrer")) rel.add("noreferrer");
+        link.rel = [...rel].join(" ");
 
-      // Set up the trigger
-      const id = "submenu-" + Math.random().toString(36).slice(2, 7);
-      submenu.id = id;
-      trigger.setAttribute("role", "button");
-      trigger.setAttribute("tabindex", "0");
-      trigger.setAttribute("aria-haspopup", "menu");
-      trigger.setAttribute("aria-expanded", "false");
-      trigger.setAttribute("aria-controls", id);
+        // Avoid duplicating the span if this runs more than once
+        if (link.querySelector(".sr-only")) return;
 
-      function openSubmenu() {
-        item.classList.add("et-show-dropdown", "et-hover");
-        submenu.style.visibility = "visible"; // ensure it's visible for screen readers
-        submenu.style.opacity = "1"; // ensure it's visible for screen readers
-        trigger.setAttribute("aria-expanded", "true");
-        // Move focus to first submenu item
-        setTimeout(() => {
-          submenu.querySelector("a")?.focus();
-        }, 150); // adjust to match Divi's transition duration
-      }
+        const span = document.createElement("span");
+        span.className = "sr-only";
+        span.textContent = "(opens in new tab)";
+        link.appendChild(span);
+      });
+    }
 
-      function closeSubmenu() {
-        item.classList.remove("et-show-dropdown", "et-hover");
-        submenu.style = "";
+    function makeToggleAccessible() {
+      document.querySelectorAll(".et_pb_toggle").forEach((toggle) => {
+        const title = toggle.querySelector(".et_pb_toggle_title");
+        const content = toggle.querySelector(".et_pb_toggle_content");
+
+        if (!title || !content) return;
+
+        // Give the content an ID so the title can reference it
+        const id = "toggle-" + Math.random().toString(36).slice(2, 7);
+        content.id = id;
+
+        // Make the title a button
+        title.setAttribute("role", "button");
+        title.setAttribute("tabindex", "0");
+        title.setAttribute("aria-controls", id);
+
+        // Set initial state
+        const isOpen = toggle.classList.contains("et_pb_toggle_open");
+        title.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        content.setAttribute("aria-hidden", isOpen ? "false" : "true");
+
+        // Keyboard support — Enter and Space should toggle
+        title.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            title.click();
+          }
+        });
+
+        // Keep ARIA in sync when Divi toggles the class
+        const observer = new MutationObserver(() => {
+          const open = toggle.classList.contains("et_pb_toggle_open");
+          title.setAttribute("aria-expanded", open ? "true" : "false");
+          content.setAttribute("aria-hidden", open ? "false" : "true");
+        });
+
+        observer.observe(toggle, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+      });
+    }
+
+    function makeSecondaryMenuAccessibleByKeyboard() {
+      document.querySelectorAll(".menu-item-has-children").forEach((item) => {
+        const trigger = item.querySelector(":scope > a");
+        const submenu = item.querySelector(":scope > .sub-menu");
+
+        if (!trigger || !submenu) return;
+
+        // Set up the trigger
+        const id = "submenu-" + Math.random().toString(36).slice(2, 7);
+        submenu.id = id;
+        trigger.setAttribute("role", "button");
+        trigger.setAttribute("tabindex", "0");
+        trigger.setAttribute("aria-haspopup", "menu");
         trigger.setAttribute("aria-expanded", "false");
+        trigger.setAttribute("aria-controls", id);
+
+        function openSubmenu() {
+          item.classList.add("et-show-dropdown", "et-hover");
+          submenu.style.visibility = "visible"; // ensure it's visible for screen readers
+          submenu.style.opacity = "1"; // ensure it's visible for screen readers
+          trigger.setAttribute("aria-expanded", "true");
+          // Move focus to first submenu item
+          setTimeout(() => {
+            submenu.querySelector("a")?.focus();
+          }, 150); // adjust to match Divi's transition duration
+        }
+
+        function closeSubmenu() {
+          item.classList.remove("et-show-dropdown", "et-hover");
+          submenu.style = "";
+          trigger.setAttribute("aria-expanded", "false");
+        }
+
+        // Enter/Space opens the submenu
+        trigger.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            const isOpen = trigger.getAttribute("aria-expanded") === "true";
+            isOpen ? closeSubmenu() : openSubmenu();
+          }
+          // Escape on trigger closes submenu
+          if (e.key === "Escape") {
+            closeSubmenu();
+          }
+        });
+
+        submenu.addEventListener("keydown", (e) => {
+          if (e.key === " ") {
+            e.preventDefault();
+            trigger.focus();
+            closeSubmenu();
+          }
+          // Escape within submenu closes submenu and returns focus to trigger
+          if (e.key === "Escape") {
+            trigger.focus();
+            closeSubmenu();
+          }
+        });
+
+        // Close when focus leaves the whole menu item entirely
+        item.addEventListener("focusout", (e) => {
+          setTimeout(() => {
+            if (!item.contains(document.activeElement)) closeSubmenu();
+          }, 100);
+        });
+      });
+    }
+
+    function makeViewportScalable() {
+      meta = document.querySelector("meta[name='viewport']");
+      if (meta) {
+        meta.setAttribute(
+          "content",
+          "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1",
+        );
+      }
+    }
+
+    function addHeadingAndReturnButtonToEventPages() {
+      var targetClasses = ["civicrm-event-register", "civicrm-event-info"];
+      var hasTargetClass = targetClasses.some(function (cls) {
+        return document.body.classList.contains(cls);
+      });
+      if (!hasTargetClass) return;
+
+      // Insert page heading
+      var mainContent = document.getElementById("crm-main-content-wrapper");
+      var metaTitle = document.querySelector('meta[property="og:title"]');
+      if (!mainContent || !metaTitle) return;
+
+      var heading = document.createElement("h1");
+      heading.textContent = metaTitle.content;
+
+      mainContent.insertBefore(heading, mainContent.firstChild);
+
+      // Insert "Return to Event List" link at the bottom
+      var eventDiv = document.querySelector(".event-info");
+      if (!eventDiv) eventDiv = document.querySelector(".crm-event-register-form-block");
+      if (!eventDiv) return;
+
+      var backLink = document.createElement("a");
+      backLink.href = "/civicrm-event-List/";
+      backLink.textContent = "Return to Current Events";
+      backLink.className = "civicrm-back-button";
+
+      eventDiv.appendChild(backLink);
+    }
+
+    function addSkipToContent() {
+      var skip = document.createElement("a");
+      skip.href = "#main-content";
+      skip.className = "skip-to-content-link";
+      skip.textContent = "Skip to main content";
+
+      var target = document.getElementById("main-content");
+      if (target) {
+        // Insert as the very first element in the body, so it's first in tab order
+        document.body.insertBefore(skip, document.body.firstChild);
+        skip.addEventListener("click", function () {
+          target.setAttribute("tabindex", "-1");
+          target.focus({ preventScroll: true });
+        });
+      }
+    }
+
+    function setAgmAttendeeRoles() {
+      var allowed = ["1", "7"];
+      var legendText = "AGM Attendee";
+
+      function findAgmFieldset() {
+        var legends = document.querySelectorAll("legend");
+        for (var i = 0; i < legends.length; i++) {
+          if (legends[i].textContent.trim().indexOf(legendText) !== -1) {
+            // fieldset is typically the legend's parent
+            return legends[i].closest("fieldset") || legends[i].parentElement;
+          }
+        }
+        return null;
       }
 
-      // Enter/Space opens the submenu
-      trigger.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          const isOpen = trigger.getAttribute("aria-expanded") === "true";
-          isOpen ? closeSubmenu() : openSubmenu();
+      function filterRoleOptions() {
+        var fieldset = findAgmFieldset();
+        if (!fieldset) {
+          return false; // profile not rendered yet, or wrong page
         }
-        // Escape on trigger closes submenu
-        if (e.key === "Escape") {
-          closeSubmenu();
-        }
-      });
 
-      submenu.addEventListener("keydown", (e) => {
-        if (e.key === " ") {
-          e.preventDefault();
-          trigger.focus();
-          closeSubmenu();
+        var selects = fieldset.querySelectorAll('select[id^="participant_role"]');
+        if (!selects.length) {
+          return false;
         }
-        // Escape within submenu closes submenu and returns focus to trigger
-        if (e.key === "Escape") {
-          trigger.focus();
-          closeSubmenu();
-        }
-      });
 
-      // Close when focus leaves the whole menu item entirely
-      item.addEventListener("focusout", (e) => {
-        setTimeout(() => {
-          if (!item.contains(document.activeElement)) closeSubmenu();
-        }, 100);
-      });
-    });
-  }
+        selects.forEach(function (select) {
+          for (var i = select.options.length - 1; i >= 0; i--) {
+            var opt = select.options[i];
+            if (opt.value !== "" && allowed.indexOf(opt.value) === -1) {
+              select.remove(i);
+            }
+          }
 
-  function makeViewportScalable() {
-    meta = document.querySelector("meta[name='viewport']");
-    if (meta) {
-      meta.setAttribute(
-        "content",
-        "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1",
-      );
+          if (allowed.indexOf(select.value) === -1) {
+            select.value = allowed[0];
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+          }
+        });
+
+        return true;
+      }
+
+      if (filterRoleOptions()) {
+        return;
+      }
     }
-  }
 
-  function addHeadingAndReturnButtonToEventPages() {
-    var targetClasses = ["civicrm-event-register", "civicrm-event-info"];
-    var hasTargetClass = targetClasses.some(function (cls) {
-      return document.body.classList.contains(cls);
-    });
-    if (!hasTargetClass) return;
-
-    // Insert page heading
-    var mainContent = document.getElementById("crm-main-content-wrapper");
-    var metaTitle = document.querySelector('meta[property="og:title"]');
-    if (!mainContent || !metaTitle) return;
-
-    var heading = document.createElement("h1");
-    heading.textContent = metaTitle.content;
-
-    mainContent.insertBefore(heading, mainContent.firstChild);
-
-    // Insert "Return to Event List" link at the bottom
-    var eventDiv = document.querySelector(".event-info");
-    if (!eventDiv) eventDiv = document.querySelector(".crm-event-register-form-block");
-    if (!eventDiv) return;
-
-    var backLink = document.createElement("a");
-    backLink.href = "/civicrm-event-List/";
-    backLink.textContent = "Return to Event List";
-    backLink.className = "civicrm-back-button";
-
-    eventDiv.appendChild(backLink);
-  }
-
-  function addSkipToContent() {
-    var skip = document.createElement("a");
-    skip.href = "#main-content";
-    skip.className = "skip-link screen-reader-text";
-    skip.textContent = "Skip to content";
-
-    // Insert as the very first element in the body, so it's first in tab order
-    document.body.insertBefore(skip, document.body.firstChild);
-
-    var target = document.getElementById("main-content");
-    if (target) {
-      skip.addEventListener("click", function () {
-        target.setAttribute("tabindex", "-1");
-        target.focus({ preventScroll: true });
-      });
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", addNewTabWarnings);
+      document.addEventListener("DOMContentLoaded", makeToggleAccessible);
+      document.addEventListener("DOMContentLoaded", makeSecondaryMenuAccessibleByKeyboard);
+      document.addEventListener("DOMContentLoaded", makeViewportScalable);
+      document.addEventListener("DOMContentLoaded", addHeadingAndReturnButtonToEventPages);
+      document.addEventListener("DOMContentLoaded", addSkipToContent);
+      document.addEventListener("DOMContentLoaded", setAgmAttendeeRoles);
+    } else {
+      addNewTabWarnings();
+      makeToggleAccessible();
+      makeSecondaryMenuAccessibleByKeyboard();
+      makeViewportScalable();
+      addHeadingAndReturnButtonToEventPages();
+      addSkipToContent();
+      setAgmAttendeeRoles();
     }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", addNewTabWarnings);
-    document.addEventListener("DOMContentLoaded", makeToggleAccessible);
-    document.addEventListener("DOMContentLoaded", makeSecondaryMenuAccessibleByKeyboard);
-    document.addEventListener("DOMContentLoaded", makeViewportScalable);
-    document.addEventListener("DOMContentLoaded", addHeadingAndReturnButtonToEventPages);
-    document.addEventListener("DOMContentLoaded", addSkipToContent);
-  } else {
-    addNewTabWarnings();
-    makeToggleAccessible();
-    makeSecondaryMenuAccessibleByKeyboard();
-    makeViewportScalable();
-    addHeadingAndReturnButtonToEventPages();
-    addSkipToContent();
-  }
-</script>
+  </script>
+</head>
